@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LINE LIFF 自動送信</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding-top: 50px;
+      }
+      .loading {
+        font-size: 1.2em;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LINE連携中...</h1>
+    <p class="loading">フォームに自動で遷移します。お待ちください。</p>
+
+    <script>
+      async function main() {
+        try {
+          await liff.init({ liffId: "2007628048-pAEyxb7n" });
+
+          if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+          }
+
+          const profile = await liff.getProfile();
+          const userId = profile.userId;
+
+          const formUrl =
+            "https://docs.google.com/forms/d/e/1FAIpQLSeb9xvpYjLJL3ECEKdqkZ1YqqEYD2xR-AwErACHzQXtqVtEg/viewform";
+          const entryField = "entry.1391636531";
+
+          const finalUrl = `${formUrl}?${entryField}=${encodeURIComponent(
+            userId
+          )}`;
+          window.location.href = finalUrl;
+        } catch (err) {
+          document.querySelector(".loading").textContent =
+            "LINE認証に失敗しました。もう一度お試しください。";
+          console.error("LIFFエラー:", err);
+        }
+      }
+
+      main();
+    </script>
+  </body>
+</html>
